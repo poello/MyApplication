@@ -38,9 +38,18 @@ public class HelloWorldController {
     }
 
     @PostMapping(path = "/createUser")
-    public String createUser() {
-        User user = createsUsers();
-        return "";
+    public String createUser(@RequestParam(name = "userLogin") String login, @RequestParam(name = "password") String password,
+                             @RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
+
+        User user = createUserMethod(login, password, firstName, lastName);
+        return login + " " + password + " " + firstName + " " + lastName + " ";
+    }
+
+    private User createUserMethod(String login, String password, String firstName, String lastName) {
+        User user = UserBuilder.anUser().withLogin(login).withPassword(password).withFirstName(firstName).withLastName(lastName).build();
+        userDataAccess.createUser(user);
+
+        return user;
     }
 
     private User createsUsers() {

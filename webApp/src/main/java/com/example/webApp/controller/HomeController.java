@@ -1,17 +1,15 @@
 package com.example.webApp.controller;
 
+import com.example.webApp.CreateQuery;
 import com.example.webApp.SearchingQuery;
+import com.example.webApp.User;
 import com.example.webApp.UserList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class HomeController {
@@ -21,12 +19,15 @@ public class HomeController {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    private List<String> tasks = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
+    @GetMapping("/welcome")
+    public String homePage() {
+        return "welcome";
+    }
 
     @GetMapping("/search")
-    public String main(Model model) {
-        model.addAttribute("searchingQuery", new SearchingQuery());
-        UserList users = restTemplate.getForObject("http://localhost:8080/users?userLogin=a", UserList.class);
+    public String goToSearch(Model model) {
+        model.addAttribute("searchingQuery", new SearchingQuery()); //adding to model so that we can use it in .html
+        UserList users = restTemplate.getForObject("http://localhost:8080/users?userLogin=ą", UserList.class);
         model.addAttribute("users", users.getUsers());
 //        model.addAttribute("searchByLogin", searchByLogin);
 
@@ -41,15 +42,58 @@ public class HomeController {
         return "search"; //view
     }
 
-    // /hello?name=kotlin
-    @GetMapping("/hello")
-    public String mainWithParam(
-            @RequestParam(name = "name", required = false, defaultValue = "")
-                    String name, Model model) {
+    @GetMapping("/searchById")
+    public String goToSearchById(Model model) {
+        model.addAttribute("searchingQuery", new SearchingQuery());
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=1", User.class);
+        model.addAttribute("user", user);
 
-        model.addAttribute("message", name);
-
-        return "welcome"; //view
+        return "searchById";
     }
 
+    @PostMapping("/searchById")
+    public String retrieveUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
+        model.addAttribute("user", user);
+
+        return "searchById";
+    }
+
+    @GetMapping("/delete")
+    public String goToDelete() {
+        return "delete";
+    }
+
+//    @DeleteMapping("/delete")
+//    public String deleteUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
+//        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
+//        model.addAttribute("user", user);
+//
+//        return "delete";
+//    }
+
+    @GetMapping("/createUser")
+    public String goToCreateUser() {
+        return "createUser";
+    }
+
+    @PostMapping("/createUser")
+    public String createUser(@ModelAttribute("createQuery") CreateQuery createQuery) {
+        User user = restTemplate.getForObject("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
+                                + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
+                                + "&lastName=" + createQuery.getLastName(), User.class);
+
+        return "createUser";
+    }
+
+//    // /hello?name=kotlin
+//    @GetMapping("/index")
+//    public String mainWithParam(
+//            @RequestParam(name = "name", required = false, defaultValue = "")
+//                    String name, Model model) {
+//
+//        model.addAttribute("message", name);
+//
+//        return "welcome"; //view
+//    }
 }
