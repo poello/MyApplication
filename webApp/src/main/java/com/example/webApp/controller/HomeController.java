@@ -6,9 +6,7 @@ import com.example.webApp.User;
 import com.example.webApp.UserList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
@@ -29,7 +27,7 @@ public class HomeController {
         model.addAttribute("searchingQuery", new SearchingQuery()); //adding to model so that we can use it in .html
         UserList users = restTemplate.getForObject("http://localhost:8080/users?userLogin=ą", UserList.class);
         model.addAttribute("users", users.getUsers());
-//        model.addAttribute("searchByLogin", searchByLogin);
+        model.addAttribute("searchByLogin", searchByLogin);
 
         return "search"; //view
     }
@@ -44,33 +42,57 @@ public class HomeController {
 
     @GetMapping("/searchById")
     public String goToSearchById(Model model) {
-        model.addAttribute("searchingQuery", new SearchingQuery());
-        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=1", User.class);
-        model.addAttribute("user", user);
-
-        return "searchById";
+        model.addAttribute("user", new User());
+        return "searchById"; //view
     }
 
     @PostMapping("/searchById")
     public String retrieveUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
         User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
-        model.addAttribute("user", user);
+        if(user == null) {
+            model.addAttribute("user", new User());
+        } else {
+            model.addAttribute("user", user);
+        }
 
-        return "searchById";
+        return "searchById"; //view
     }
 
     @GetMapping("/delete")
-    public String goToDelete() {
+    public String goToDelete(Model model) {
+        model.addAttribute("user", new User());
         return "delete";
     }
 
 //    @DeleteMapping("/delete")
-//    public String deleteUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
-//        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
-//        model.addAttribute("user", user);
-//
-//        return "delete";
-//    }
+    @RequestMapping(value = "/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
+    public String deleteUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
+        if(user == null) {
+            model.addAttribute("user", new User());
+        } else {
+            model.addAttribute("user", user);
+        }
+
+        return "delete";
+    }
+
+    @GetMapping("/updatePassword")
+    public String goToUpdatePassword() {
+        return "updatePassword";
+    }
+
+    @PatchMapping("/updatePassword")
+    public String updatePasswordById(@ModelAttribute("createQuery") CreateQuery createQuery, Model model) {
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + createQuery.getId(), User.class);
+        if(user == null) {
+            model.addAttribute("user", new User());
+        } else {
+            model.addAttribute("user", user);
+        }
+
+        return "updatePassword";
+    }
 
     @GetMapping("/createUser")
     public String goToCreateUser() {
@@ -85,15 +107,4 @@ public class HomeController {
 
         return "createUser";
     }
-
-//    // /hello?name=kotlin
-//    @GetMapping("/index")
-//    public String mainWithParam(
-//            @RequestParam(name = "name", required = false, defaultValue = "")
-//                    String name, Model model) {
-//
-//        model.addAttribute("message", name);
-//
-//        return "welcome"; //view
-//    }
 }

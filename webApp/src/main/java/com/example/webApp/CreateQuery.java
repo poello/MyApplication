@@ -1,17 +1,17 @@
 package com.example.webApp;
 
 public class CreateQuery {
-    private long id;
+    private String id;
     private String login;
     private String password;
     private String firstName;
     private String lastName;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

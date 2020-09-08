@@ -24,21 +24,21 @@
     <form th:action="@{/createUser}" th:object="${createQuery}" method="post">
         <div class="row mt-3">
             <div class="col">
-                <span class="input-group-text" id="inputGroup-sizing-default">Tworzenie użytkownika</span>
+                <span class="input-group-text" id="inputGroup-sizing-default">| Tworzenie użytkownika |</span>
             </div>
-            login:
+            <span class="input-group-text" id="inputGroup-sizing-default2">login:</span>
             <div class="col">
                 <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="login" name="login">
             </div>
-            hasło:
+            <span class="input-group-text" id="inputGroup-sizing-default3">hasło:</span>
             <div class="col">
                 <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="password" name="password">
             </div>
-            imię:
+            <span class="input-group-text" id="inputGroup-sizing-default4">imię:</span>
             <div class="col">
                 <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="firstName" name="firstName">
             </div>
-            nazwisko:
+            <span class="input-group-text" id="inputGroup-sizing-default5">nazwisko:</span>
             <div class="col">
                 <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="lastName" name="lastName">
             </div>
