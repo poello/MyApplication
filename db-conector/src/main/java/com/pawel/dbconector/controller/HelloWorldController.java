@@ -41,7 +41,7 @@ public class HelloWorldController {
     public String createUser(@RequestParam(name = "userLogin") String login, @RequestParam(name = "password") String password,
                              @RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName) {
 
-        User user = createUserMethod(login, password, firstName, lastName);
+        createUserMethod(login, password, firstName, lastName);
         return login + " " + password + " " + firstName + " " + lastName + " ";
     }
 

@@ -49,7 +49,7 @@ public class HomeController {
     @PostMapping("/searchById")
     public String retrieveUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
         User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
-        if(user == null) {
+        if (user == null) {
             model.addAttribute("user", new User());
         } else {
             model.addAttribute("user", user);
@@ -64,11 +64,11 @@ public class HomeController {
         return "delete";
     }
 
-//    @DeleteMapping("/delete")
-    @RequestMapping(value = "/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
+    @DeleteMapping("/delete")
+//    @RequestMapping(value = "/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     public String deleteUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
         User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
-        if(user == null) {
+        if (user == null) {
             model.addAttribute("user", new User());
         } else {
             model.addAttribute("user", user);
@@ -85,7 +85,7 @@ public class HomeController {
     @PatchMapping("/updatePassword")
     public String updatePasswordById(@ModelAttribute("createQuery") CreateQuery createQuery, Model model) {
         User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + createQuery.getId(), User.class);
-        if(user == null) {
+        if (user == null) {
             model.addAttribute("user", new User());
         } else {
             model.addAttribute("user", user);
@@ -101,10 +101,30 @@ public class HomeController {
 
     @PostMapping("/createUser")
     public String createUser(@ModelAttribute("createQuery") CreateQuery createQuery) {
-        User user = restTemplate.getForObject("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
+        restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
                                 + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
-                                + "&lastName=" + createQuery.getLastName(), User.class);
+                                + "&lastName=" + createQuery.getLastName(), null, String.class);
 
         return "createUser";
     }
 }
+
+
+//restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
+//        + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
+//        + "&lastName=" + createQuery.getLastName(), request, User.class);
+
+//    HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//                User user = new User();
+//                user.setLogin(createQuery.getLogin());
+//                user.setPassword(createQuery.getPassword());
+//                user.setFirstName(createQuery.getFirstName());
+//                user.setLastName(createQuery.getLastName());
+//
+//                HttpEntity<User> request = new HttpEntity<>(new User(), headers);
+//        restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
+//        + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
+//        + "&lastName=" + createQuery.getLastName(), request, User.class);
+//        restTemplate.postForEntity("http://localhost:8080/createUser", request, User.class);
