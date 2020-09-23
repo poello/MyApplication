@@ -2,17 +2,17 @@ package com.pawel.dbconector.dao;
 
 public class User {
 //    @ID
-    private long id;
+    private Long id;
     private String login;
     private String password;
     private String firstName;
     private String lastName;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

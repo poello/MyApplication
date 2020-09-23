@@ -37,6 +37,7 @@
             <th scope="col">password</th>
             <th scope="col">first name</th>
             <th scope="col">last name</th>
+            <th scope="col">options</th>
         </tr>
         </thead>
         <tbody>
@@ -46,6 +47,11 @@
             <td th:text="${user.password}"></td>
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
+            <td><a class="btn btn-danger" th:href="@{/delete?id={id}(id=${user.id})}" type="submit">Usuń</a>
+                <br>
+                <br>
+                <a class="btn btn-primary" th:href="@{/updatePassword?id={id}(id=${user.id})}" type="submit">Zmień hasło</a></td>
+
         </tr>
         </tbody>
     </table>

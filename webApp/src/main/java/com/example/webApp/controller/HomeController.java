@@ -4,10 +4,19 @@ import com.example.webApp.CreateQuery;
 import com.example.webApp.SearchingQuery;
 import com.example.webApp.User;
 import com.example.webApp.UserList;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
+
+import javax.websocket.server.PathParam;
 
 @Controller
 public class HomeController {
@@ -25,7 +34,7 @@ public class HomeController {
     @GetMapping("/search")
     public String goToSearch(Model model) {
         model.addAttribute("searchingQuery", new SearchingQuery()); //adding to model so that we can use it in .html
-        UserList users = restTemplate.getForObject("http://localhost:8080/users?userLogin=ą", UserList.class);
+        UserList users = restTemplate.getForObject("http://localhost:8080/users?userLogin=", UserList.class);
         model.addAttribute("users", users.getUsers());
         model.addAttribute("searchByLogin", searchByLogin);
 
@@ -59,39 +68,45 @@ public class HomeController {
     }
 
     @GetMapping("/delete")
-    public String goToDelete(Model model) {
-        model.addAttribute("user", new User());
-        return "delete";
-    }
+    public String deleteUser(@PathParam("id") Long id, Model model) {
 
-    @DeleteMapping("/delete")
-//    @RequestMapping(value = "/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
-    public String deleteUser(@ModelAttribute("searchingQuery") SearchingQuery searchingQuery, Model model) {
-        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + searchingQuery.getById(), User.class);
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + id, User.class);
         if (user == null) {
             model.addAttribute("user", new User());
         } else {
             model.addAttribute("user", user);
         }
 
-        return "delete";
+        restTemplate.delete("http://localhost:8080/user?identyfikator=" + id);
+
+        return "redirect:/search";
     }
 
     @GetMapping("/updatePassword")
-    public String goToUpdatePassword() {
-        return "updatePassword";
-    }
-
-    @PatchMapping("/updatePassword")
-    public String updatePasswordById(@ModelAttribute("createQuery") CreateQuery createQuery, Model model) {
-        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + createQuery.getId(), User.class);
+    public String updatePasswordById(@PathParam("id") Long id, Model model) {
+        User user = restTemplate.getForObject("http://localhost:8080/user?identyfikator=" + id, User.class);
         if (user == null) {
-            model.addAttribute("user", new User());
+            return "redirect:/search";
         } else {
             model.addAttribute("user", user);
         }
 
         return "updatePassword";
+    }
+
+    @PostMapping("/updatePassword")
+    public String updatePasswordById(@ModelAttribute("user") User user, Model model) {
+        RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+
+        HttpEntity<String> request =
+                new HttpEntity<>(user.getPassword(), headers);
+
+        template.patchForObject("http://localhost:8080/user?identyfikator=" + user.getId(), request, User.class);
+
+        return "redirect:/search";
     }
 
     @GetMapping("/createUser")
@@ -101,30 +116,22 @@ public class HomeController {
 
     @PostMapping("/createUser")
     public String createUser(@ModelAttribute("createQuery") CreateQuery createQuery) {
-        restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
-                                + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
-                                + "&lastName=" + createQuery.getLastName(), null, String.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject personJsonObject = new JSONObject();
+        personJsonObject.put("login", createQuery.getLogin());
+        personJsonObject.put("password", createQuery.getPassword());
+        personJsonObject.put("firstName", createQuery.getFirstName());
+        personJsonObject.put("lastName", createQuery.getLastName());
+
+        HttpEntity<String> request =
+                new HttpEntity<>(personJsonObject.toString(), headers);
+
+        restTemplate.postForObject("http://localhost:8080/createUser", request, String.class);
 
         return "createUser";
     }
+
+
 }
-
-
-//restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
-//        + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
-//        + "&lastName=" + createQuery.getLastName(), request, User.class);
-
-//    HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//                User user = new User();
-//                user.setLogin(createQuery.getLogin());
-//                user.setPassword(createQuery.getPassword());
-//                user.setFirstName(createQuery.getFirstName());
-//                user.setLastName(createQuery.getLastName());
-//
-//                HttpEntity<User> request = new HttpEntity<>(new User(), headers);
-//        restTemplate.postForEntity("http://localhost:8080/createUser?userLogin=" + createQuery.getLogin()
-//        + "&password=" + createQuery.getPassword() + "&firstName=" + createQuery.getFirstName()
-//        + "&lastName=" + createQuery.getLastName(), request, User.class);
-//        restTemplate.postForEntity("http://localhost:8080/createUser", request, User.class);

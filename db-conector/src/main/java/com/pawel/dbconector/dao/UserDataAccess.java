@@ -36,7 +36,7 @@ public class UserDataAccess {
                 .addValue("first_name", user.getFirstName())
                 .addValue("last_name", user.getLastName());
         namedParameterJdbcTemplate.update(INSERT_SQL, parameters, holder);
-        user.setId(holder.getKey().intValue());
+        user.setId(holder.getKey().longValue());
     }
 
     public User getUserById(long userId) {
