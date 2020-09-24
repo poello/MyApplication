@@ -32,9 +32,14 @@ public class HelloWorldController {
         userDataAccess.deleteUserById(userId);
     }
 
+//    @PatchMapping(path = "/user")
+//    public void updateUser(@RequestParam(name = "identyfikator") long userId, @RequestBody String password) {
+//        userDataAccess.updateUserById(userId, password);
+//    }
+
     @PatchMapping(path = "/user")
-    public void updateUser(@RequestParam(name = "identyfikator") long userId, @RequestBody String password) {
-        userDataAccess.updateUserPasswordById(userId, password);
+    public void updateUser(@RequestBody() User user) {
+        userDataAccess.updateUserById(user);
     }
 
     @PostMapping(path = "/createUser")

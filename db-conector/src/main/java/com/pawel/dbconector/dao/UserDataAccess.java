@@ -21,7 +21,7 @@ public class UserDataAccess {
     private final String INSERT_SQL = "INSERT INTO EXAMPLE_SCHEMA.USERS(login, password, first_name, last_name) values(:login, :password, :first_name, :last_name)";
     private final String SELECT_SQL = "SELECT * FROM EXAMPLE_SCHEMA.USERS WHERE id = :userId";
     private final String SELECT_BY_LOGIN_SQL = "SELECT * FROM EXAMPLE_SCHEMA.USERS WHERE login LIKE :login";
-    private final String UPDATE_SQL = "UPDATE EXAMPLE_SCHEMA.USERS SET password = :password WHERE id = :userId";
+    private final String UPDATE_SQL = "UPDATE EXAMPLE_SCHEMA.USERS SET password = :password, first_name = :first_name, last_name = :last_name WHERE id = :userId";
     private final String DELETE_SQL = "DELETE EXAMPLE_SCHEMA.USERS WHERE id = :userId";
 
     @Autowired
@@ -59,10 +59,12 @@ public class UserDataAccess {
         namedParameterJdbcTemplate.update(DELETE_SQL, parameter);
     }
 
-    public void updateUserPasswordById(long userId, String password) {
+    public void updateUserById(User user) {
         SqlParameterSource parameter = new MapSqlParameterSource()
-                .addValue("userId", userId)
-                .addValue("password", Base64.getEncoder().encodeToString(password.getBytes()));
+                .addValue("userId", user.getId())
+                .addValue("password", Base64.getEncoder().encodeToString(user.getPassword().getBytes()))
+                .addValue("first_name", user.getFirstName())
+                .addValue("last_name", user.getLastName());
         namedParameterJdbcTemplate.update(UPDATE_SQL, parameter);
     }
 
