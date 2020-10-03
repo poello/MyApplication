@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Service // dostarcza dane
@@ -32,7 +31,7 @@ public class UserDataAccess {
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("login", user.getLogin())
-                .addValue("password", Base64.getEncoder().encodeToString(user.getPassword().getBytes()))
+                .addValue("password", user.getPassword())
                 .addValue("first_name", user.getFirstName())
                 .addValue("last_name", user.getLastName());
         namedParameterJdbcTemplate.update(INSERT_SQL, parameters, holder);
@@ -62,7 +61,7 @@ public class UserDataAccess {
     public void updateUserById(User user) {
         SqlParameterSource parameter = new MapSqlParameterSource()
                 .addValue("userId", user.getId())
-                .addValue("password", Base64.getEncoder().encodeToString(user.getPassword().getBytes()))
+                .addValue("password", user.getPassword())
                 .addValue("first_name", user.getFirstName())
                 .addValue("last_name", user.getLastName());
         namedParameterJdbcTemplate.update(UPDATE_SQL, parameter);
