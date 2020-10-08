@@ -44,7 +44,6 @@ public class HelloWorldController {
 
     @PostMapping(path = "/createUser")
     public String createUser(@RequestBody() User user) {
-
         userDataAccess.createUser(user);
         return user.getId().toString();
     }

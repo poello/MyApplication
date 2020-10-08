@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!users.getUsers().isEmpty() && users.getUsers().size() == 1) {
 
             Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-            grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
+            grantedAuthorities.add(new SimpleGrantedAuthority(users.getUsers().get(0).getRole().toString()));
 
             return new org.springframework.security.core.userdetails.User(users.getUsers().get(0).getLogin(),
                     new BCryptPasswordEncoder().encode(users.getUsers().get(0).getPassword()), grantedAuthorities);

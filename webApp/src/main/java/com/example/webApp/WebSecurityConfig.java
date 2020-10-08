@@ -19,7 +19,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,7 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/userRegistration", "/userLogin").permitAll() // ,"/administrateUsers", "/createUser", "/search"
+                    .antMatchers("/", "/userRegistration", "/userLogin").permitAll()
+                    .antMatchers("/search", "/searchById").hasAnyAuthority("moderator", "admin")
+                    .antMatchers("/createUser").hasAuthority("admin")// ,"/administrateUsers"
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()

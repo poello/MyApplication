@@ -66,6 +66,15 @@
                     <input type="password" class="form-control" th:field="*{password2}" id="password2"
                            placeholder="Powtórz hasło">
                 </div>
+                <div class="form-group">
+                    <label for="role_select">Rola</label>
+                    <select class="browser-default custom-select" name="role" id="role_select">
+                        <option disabled selected>Wysuń...</option>
+                        <option value="admin">admin</option>
+                        <option value="user">user</option>
+                        <option value="moderator">moderator</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary">Zarejestruj</button>
             </form>
         </div>

@@ -104,6 +104,10 @@ public class UserController {
     @PostMapping("/createUser")
     public String createUser(@ModelAttribute("createQuery") CreateQuery createQuery) {
 
+        if (createQuery.getRole() == null) {
+            return "createUser";
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject personJsonObject = new JSONObject();
@@ -111,6 +115,7 @@ public class UserController {
         personJsonObject.put("password", createQuery.getPassword());
         personJsonObject.put("firstName", createQuery.getFirstName());
         personJsonObject.put("lastName", createQuery.getLastName());
+        personJsonObject.put("role", createQuery.getRole());
 
         HttpEntity<String> request =
                 new HttpEntity<>(personJsonObject.toString(), headers);
@@ -132,6 +137,7 @@ public class UserController {
             personJsonObject.put("password", registerUser.getPassword1());
             personJsonObject.put("firstName", registerUser.getEmail());
             personJsonObject.put("lastName", registerUser.getEmail());
+            personJsonObject.put("role", registerUser.getRole());
 
             HttpEntity<String> request =
                     new HttpEntity<>(personJsonObject.toString(), headers);

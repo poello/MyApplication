@@ -7,6 +7,7 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
+    private UserRole role;
 
     public long getId() {
         return id;
@@ -48,5 +49,11 @@ public class User {
         this.lastName = lastName;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
 
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

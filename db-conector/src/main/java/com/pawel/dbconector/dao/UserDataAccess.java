@@ -17,7 +17,7 @@ import java.util.List;
 @Service // dostarcza dane
 //@Component // jest do procesowania danych
 public class UserDataAccess {
-    private final String INSERT_SQL = "INSERT INTO EXAMPLE_SCHEMA.USERS(login, password, first_name, last_name) values(:login, :password, :first_name, :last_name)";
+    private final String INSERT_SQL = "INSERT INTO EXAMPLE_SCHEMA.USERS(login, password, first_name, last_name, role_id) values(:login, :password, :first_name, :last_name, :role_id)";
     private final String SELECT_SQL = "SELECT * FROM EXAMPLE_SCHEMA.USERS WHERE id = :userId";
     private final String SELECT_BY_LOGIN_SQL = "SELECT * FROM EXAMPLE_SCHEMA.USERS WHERE login LIKE :login";
     private final String UPDATE_SQL = "UPDATE EXAMPLE_SCHEMA.USERS SET password = :password, first_name = :first_name, last_name = :last_name WHERE id = :userId";
@@ -33,7 +33,8 @@ public class UserDataAccess {
                 .addValue("login", user.getLogin())
                 .addValue("password", user.getPassword())
                 .addValue("first_name", user.getFirstName())
-                .addValue("last_name", user.getLastName());
+                .addValue("last_name", user.getLastName())
+                .addValue("role_id", user.getRole().getRoleID());
         namedParameterJdbcTemplate.update(INSERT_SQL, parameters, holder);
         user.setId(holder.getKey().longValue());
     }
@@ -42,13 +43,13 @@ public class UserDataAccess {
         SqlParameterSource parameter = new MapSqlParameterSource()
                 .addValue("userId", userId);
         List<User> users = namedParameterJdbcTemplate.query(SELECT_SQL, parameter, new UserMapper());
-        
-        if(users.size() > 1) {
+
+        if (users.size() > 1) {
             return users.get(0);
         } else if (users.size() == 0) {
             return null;
         }
-        
+
         return users.get(0);
     }
 
@@ -69,7 +70,7 @@ public class UserDataAccess {
 
     public List<User> getUsersByLogin(String login) {
         SqlParameterSource parameter = new MapSqlParameterSource()
-                .addValue("login", "%"+login+"%");
+                .addValue("login", "%" + login + "%");
 
         List<User> users = new ArrayList<>();
         users = namedParameterJdbcTemplate.query(SELECT_BY_LOGIN_SQL, parameter, new UserMapper());
@@ -85,6 +86,7 @@ public class UserDataAccess {
                     .withPassword(rs.getString("password"))
                     .withFirstName(rs.getString("first_name"))
                     .withLastName(rs.getString("last_name"))
+                    .withRole(UserRole.getRole(rs.getInt("role_id")))
                     .build();
         }
     }

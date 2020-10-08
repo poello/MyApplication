@@ -20,7 +20,7 @@
 </head>
 
 <body>
-<div class="container">
+<div class="container-fluid">
     <form th:action="@{/createUser}" th:object="${createQuery}" method="post">
         <div class="row mt-3">
             <div class="col">
@@ -28,19 +28,32 @@
             </div>
             <span class="input-group-text" id="inputGroup-sizing-default2">login:</span>
             <div class="col">
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="login" name="login">
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" id="login" name="login">
             </div>
             <span class="input-group-text" id="inputGroup-sizing-default3">hasło:</span>
             <div class="col">
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="password" name="password">
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" id="password" name="password">
             </div>
             <span class="input-group-text" id="inputGroup-sizing-default4">imię:</span>
             <div class="col">
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="firstName" name="firstName">
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" id="firstName" name="firstName">
             </div>
             <span class="input-group-text" id="inputGroup-sizing-default5">nazwisko:</span>
             <div class="col">
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" id="lastName" name="lastName">
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" id="lastName" name="lastName">
+            </div>
+            <span class="input-group-text" id="inputGroup-sizing-default6">rola:</span>
+            <div class="col">
+                <select class="browser-default custom-select" style="width:auto;" name="role">
+                    <option disabled selected>Wysuń...</option>
+                    <option value="admin">admin</option>
+                    <option value="user">user</option>
+                    <option value="moderator">moderator</option>
+                </select>
             </div>
             <div class="col">
                 <button class="btn btn-primary" type="submit">Wprowadź</button>

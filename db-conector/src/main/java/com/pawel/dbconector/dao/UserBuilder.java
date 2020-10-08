@@ -2,11 +2,12 @@ package com.pawel.dbconector.dao;
 
 public final class UserBuilder {
     //    @ID
-    private long id;
+    private Long id;
     private String login;
     private String password;
     private String firstName;
     private String lastName;
+    private UserRole role;
 
     private UserBuilder() {
     }
@@ -15,7 +16,7 @@ public final class UserBuilder {
         return new UserBuilder();
     }
 
-    public UserBuilder withId(long id) {
+    public UserBuilder withId(Long id) {
         this.id = id;
         return this;
     }
@@ -40,6 +41,11 @@ public final class UserBuilder {
         return this;
     }
 
+    public UserBuilder withRole(UserRole role) {
+        this.role = role;
+        return this;
+    }
+
     public User build() {
         User user = new User();
         user.setId(id);
@@ -47,6 +53,7 @@ public final class UserBuilder {
         user.setPassword(password);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setRole(role);
         return user;
     }
 }
